@@ -1,0 +1,43 @@
+export const DIFFICULTY_OPTIONS = [
+  {
+    range: "0-2",
+    label: "Easy",
+    description: "Perfect for beginners",
+    icon: "😊",
+    color: "from-green-500/20 to-green-600/10",
+    border: "border-green-500/50",
+    hover: "hover:border-green-400 hover:shadow-green-500/20",
+    text: "text-green-400",
+  },
+  {
+    range: "3-5",
+    label: "Medium",
+    description: "For intermediate learners",
+    icon: "🤔",
+    color: "from-yellow-500/20 to-yellow-600/10",
+    border: "border-yellow-500/50",
+    hover: "hover:border-yellow-400 hover:shadow-yellow-500/20",
+    text: "text-yellow-400",
+  },
+  {
+    range: "6-8",
+    label: "Hard",
+    description: "Challenge yourself",
+    icon: "💪",
+    color: "from-orange-500/20 to-orange-600/10",
+    border: "border-orange-500/50",
+    hover: "hover:border-orange-400 hover:shadow-orange-500/20",
+    text: "text-orange-400",
+  },
+  {
+    range: "9-10",
+    label: "Expert",
+    description: "Only for masters",
+    icon: "🔥",
+    color: "from-red-500/20 to-red-600/10",
+    border: "border-red-500/50",
+    hover: "hover:border-red-400 hover:shadow-red-500/20",
+    text: "text-red-400",
+  },
+];
+
