@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { notification } from "antd";
 import Link from "next/link";
-import { userAPI } from "../../utils/api";
+import { userAPI } from "../../api/api";
 import Badge from "../../component/ui/Badge";
 
 export default function DashboardPage() {

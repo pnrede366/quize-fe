@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { notification } from "antd";
 import Link from "next/link";
-import { categoryAPI } from "../../utils/api";
+import { categoryAPI } from "../../api/api";
 import Input from "../../component/ui/Input";
 
 export default function QuizzesPage() {

@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import TopThreeCard from "./TopThreeCard";
 import PlayerCard from "./PlayerCard";
 import LeaderboardTable from "./LeaderboardTable";
-import { userAPI } from "../../utils/api";
+import { userAPI } from "../../api/api";
 
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState([]);

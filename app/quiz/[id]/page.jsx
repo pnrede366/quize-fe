@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { notification } from "antd";
-import { quizAPI } from "../../../utils/api";
+import { quizAPI } from "../../../api/api";
 import Button from "../../../component/ui/Button";
 
 export default function QuizPage() {

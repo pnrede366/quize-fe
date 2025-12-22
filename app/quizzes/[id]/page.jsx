@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { notification } from "antd";
 import Link from "next/link";
-import { categoryAPI } from "../../../utils/api";
+import { categoryAPI } from "../../../api/api";
 import Button from "../../../component/ui/Button";
 
 export default function CategoryQuizzesPage() {

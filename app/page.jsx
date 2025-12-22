@@ -7,7 +7,7 @@ import SearchBox from "../component/ui/SearchBox";
 import Badge from "../component/ui/Badge";
 import DifficultySelector from "../component/ui/DifficultySelector";
 import PremiumModal from "../component/ui/PremiumModal";
-import { quizAPI, userAPI } from "../utils/api";
+import { quizAPI, userAPI } from "../api/api";
 import {
   QUICK_SUGGESTIONS,
   DIFFICULTY_LEVELS,

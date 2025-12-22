@@ -4,6 +4,7 @@ import { useState } from "react";
 import { notification } from "antd";
 import Modal from "./Modal";
 import Button from "./Button";
+import { paymentAPI, testPaymentAPI } from "../../api/api";
 
 // Load Razorpay script
 const loadRazorpayScript = () => {
@@ -51,23 +52,10 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
   const handleUpgrade = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-
       if (testMode) {
         // Test mode - simulate successful payment
-        const response = await fetch("http://localhost:5000/api/test-payment/simulate-success", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ 
-            orderId: `TEST_ORDER_${Date.now()}`,
-            plan: selectedPlan 
-          }),
-        });
-
-        const data = await response.json();
+        const orderId = `TEST_ORDER_${Date.now()}`;
+        const data = await testPaymentAPI.simulateSuccess(orderId, selectedPlan);
 
         if (data.success) {
           notification.success({
@@ -105,16 +93,7 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
         }
 
         // Create order
-        const response = await fetch("http://localhost:5000/api/payment/initiate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ plan: selectedPlan }),
-        });
-
-        const orderData = await response.json();
+        const orderData = await paymentAPI.initiate(selectedPlan);
 
         if (!orderData.success) {
           notification.error({
@@ -144,21 +123,12 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
           handler: async function (response) {
             try {
               // Verify payment
-              const verifyResponse = await fetch("http://localhost:5000/api/payment/verify", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  plan: selectedPlan,
-                }),
+              const verifyData = await paymentAPI.verify(orderData.orderId, {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                plan: selectedPlan,
               });
-
-              const verifyData = await verifyResponse.json();
 
               if (verifyData.success) {
                 notification.success({

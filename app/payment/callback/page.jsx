@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { notification } from "antd";
 import Button from "../../../component/ui/Button";
+import { paymentAPI } from "../../../api/api";
 
 function PaymentCallbackContent() {
   const router = useRouter();
@@ -28,17 +29,7 @@ function PaymentCallbackContent() {
       // Wait a bit for PhonePe webhook to process
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const token = localStorage.getItem("token");
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-      const response = await fetch(`${apiUrl}/payment/verify/${orderId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
+      const data = await paymentAPI.verifyById(orderId);
 
       if (data.success && data.code === "PAYMENT_SUCCESS") {
         setStatus("success");

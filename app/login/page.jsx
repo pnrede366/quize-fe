@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { notification } from "antd";
 import Button from "../../component/ui/Button";
+import { authAPI } from "../../api/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,27 +26,19 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const result = await response.json();
-      if (response.ok) {
+      const result = await authAPI.sendOTP(email);
         setOtpSent(true);
         notification.success({
           message: "OTP Sent",
           description: "OTP sent to your email! Please check your inbox.",
           placement: "topRight",
         });
-      } else {
-        notification.error({
-          message: "Error",
-          description: result.error || "Failed to send OTP",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || error.message || "Failed to send OTP",
+        placement: "topRight",
+      });
       notification.error({
         message: "Error",
         description: "Something went wrong. Please try again.",
@@ -68,13 +61,7 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-      });
-      const result = await response.json();
-      if (response.ok) {
+      const result = await authAPI.verifyOTP(email, otp);
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
         notification.success({
@@ -83,17 +70,10 @@ export default function LoginPage() {
           placement: "topRight",
         });
         router.push("/dashboard");
-      } else {
-        notification.error({
-          message: "Error",
-          description: result.error || "Invalid OTP",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: error.response?.data?.error || error.message || "Invalid OTP",
         placement: "topRight",
       });
     } finally {
@@ -130,15 +110,7 @@ export default function LoginPage() {
   const handleGoogleCallback = async (response) => {
     try {
       setIsLoading(true);
-      const result = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: response.credential }),
-      });
-      
-      const data = await result.json();
-      
-      if (result.ok) {
+      const data = await authAPI.googleAuth(response.credential);
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         notification.success({
@@ -147,14 +119,12 @@ export default function LoginPage() {
           placement: "topRight",
         });
         router.push("/");
-      } else {
-        notification.error({
-          message: "Error",
-          description: data.error || "Google login failed",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || error.message || "Google login failed",
+        placement: "topRight",
+      });
       notification.error({
         message: "Error",
         description: "Something went wrong. Please try again.",

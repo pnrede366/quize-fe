@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { notification } from "antd";
 import Link from "next/link";
 import Button from "../../../../component/ui/Button";
-import api from "../../../../utils/api";
+import { quizAPI, userAPI } from "../../../../api/api";
 
 export default function QuizResultsPage() {
   const params = useParams();
@@ -27,12 +27,12 @@ export default function QuizResultsPage() {
       }
 
       // Fetch quiz data
-      const quizResponse = await api.get(`/quizzes/${params.id}`);
-      setQuiz(quizResponse.data);
+      const quizData = await quizAPI.getById(params.id);
+      setQuiz(quizData);
 
       // Fetch user's result for this quiz
-      const resultResponse = await api.get(`/user/quiz-result/${params.id}`);
-      setResult(resultResponse.data);
+      const resultData = await userAPI.getQuizResult(params.id);
+      setResult(resultData);
     } catch (error) {
       notification.error({
         message: "Error",

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { notification } from "antd";
 import Form from "../../component/ui/Form";
 import Button from "../../component/ui/Button";
+import { authAPI } from "../../api/api";
 
 const signupFields = [
   {
@@ -76,13 +77,7 @@ export default function SignupPage() {
   const handleSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      if (response.ok) {
+      const result = await authAPI.signup(data);
         setUserData(data);
         setOtpSent(true);
         notification.success({
@@ -90,14 +85,12 @@ export default function SignupPage() {
           description: "OTP sent to your email! Please check your inbox.",
           placement: "topRight",
         });
-      } else {
-        notification.error({
-          message: "Error",
-          description: result.error || "Signup failed",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || error.message || "Signup failed",
+        placement: "topRight",
+      });
       notification.error({
         message: "Error",
         description: "Something went wrong. Please try again.",
@@ -120,26 +113,18 @@ export default function SignupPage() {
     }
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userData.email, otp }),
-      });
-      const result = await response.json();
-      if (response.ok) {
+      const result = await authAPI.verifyOTP(userData.email, otp);
         notification.success({
           message: "Success",
           description: "Account created successfully!",
           placement: "topRight",
         });
-      } else {
-        notification.error({
-          message: "Error",
-          description: result.error || "Invalid OTP",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || error.message || "Invalid OTP",
+        placement: "topRight",
+      });
       notification.error({
         message: "Error",
         description: "Something went wrong. Please try again.",
@@ -153,15 +138,7 @@ export default function SignupPage() {
   const handleGoogleCallback = async (response) => {
     try {
       setIsLoading(true);
-      const result = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: response.credential }),
-      });
-      
-      const data = await result.json();
-      
-      if (result.ok) {
+      const data = await authAPI.googleAuth(response.credential);
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         notification.success({
@@ -170,14 +147,12 @@ export default function SignupPage() {
           placement: "topRight",
         });
         router.push("/");
-      } else {
-        notification.error({
-          message: "Error",
-          description: data.error || "Google signup failed",
-          placement: "topRight",
-        });
-      }
     } catch (error) {
+      notification.error({
+        message: "Error",
+        description: error.response?.data?.error || error.message || "Google signup failed",
+        placement: "topRight",
+      });
       notification.error({
         message: "Error",
         description: "Something went wrong. Please try again.",
