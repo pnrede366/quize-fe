@@ -20,11 +20,11 @@ export default function LevelCalculationInfo() {
           <div key={index} className="rounded-lg border border-purple-500/30 bg-purple-500/10 p-3 text-center">
             <p className="text-xs sm:text-sm text-zinc-400 mb-1">{level.level}</p>
             <p className="text-sm sm:text-base font-bold text-purple-400">{level.range}</p>
-            <p className="text-xs text-zinc-500">{level.points}</p>
+            <p className="text-xs text-zinc-400">{level.points}</p>
           </div>
         ))}
       </div>
-      <p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-zinc-500 px-2">
+      <p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-zinc-400 px-2">
         🎯 Level up by earning points! Each level requires 1,000 more points than the previous one.
       </p>
     </div>

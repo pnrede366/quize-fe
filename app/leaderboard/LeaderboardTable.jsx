@@ -1,5 +1,5 @@
 import { TABLE_HEADERS, LEVEL_COLORS } from "./constants";
-import { getAvatar, getRankDisplay } from "./utility";
+import { getRankDisplay, renderAvatar } from "./utility";
 
 // Table cell renderers configuration
 const CELL_RENDERERS = {
@@ -10,7 +10,7 @@ const CELL_RENDERERS = {
   ),
   player: (player) => (
     <div className="flex items-center gap-2 sm:gap-3">
-      <span className="text-xl sm:text-2xl flex-shrink-0">{getAvatar(player.username)}</span>
+      {renderAvatar(player.username, player.profilePicture, "md")}
       <span className="font-medium text-sm sm:text-base text-zinc-100 break-words">{player.username}</span>
     </div>
   ),

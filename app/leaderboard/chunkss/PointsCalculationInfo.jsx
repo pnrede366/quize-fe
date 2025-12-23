@@ -12,11 +12,11 @@ export default function PointsCalculationInfo() {
           <div key={index} className={`rounded-lg border ${config.borderColor} ${config.bgColor} p-3 sm:p-4 text-center`}>
             <p className="mb-1 text-xs sm:text-sm text-zinc-400">{config.difficulty}</p>
             <p className={`text-lg sm:text-xl md:text-2xl font-bold ${config.textColor}`}>{config.points}</p>
-            <p className="text-xs text-zinc-500">per correct</p>
+            <p className="text-xs text-zinc-400">per correct</p>
           </div>
         ))}
       </div>
-      <p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-zinc-500 px-2">
+      <p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-zinc-400 px-2">
         💡 Take harder quizzes to earn more points and climb the leaderboard faster!
       </p>
     </div>

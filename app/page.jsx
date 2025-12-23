@@ -1,13 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { message } from "antd";
 import SearchBox from "../component/ui/SearchBox";
 import Badge from "../component/ui/Badge";
-import DifficultySelector from "../component/ui/DifficultySelector";
-import PremiumModal from "../component/ui/PremiumModal";
 import { quizAPI, userAPI } from "../api/api";
+
+// Dynamic imports for heavy components
+const DifficultySelector = dynamic(() => import("../component/ui/DifficultySelector"), {
+  ssr: false,
+});
+
+const PremiumModal = dynamic(() => import("../component/ui/PremiumModal"), {
+  ssr: false,
+});
 import {
   QUICK_SUGGESTIONS,
   DIFFICULTY_LEVELS,
@@ -25,10 +33,14 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    fetchUserProfile();
+    // Defer profile fetch to avoid blocking initial render
+    const timer = setTimeout(() => {
+      fetchUserProfile();
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
@@ -38,18 +50,18 @@ export default function Home() {
     } catch (error) {
       // User not logged in or error fetching profile
     }
-  };
+  }, []);
 
-  const handleGenerate = () => {
+  const handleGenerate = useCallback(() => {
     const topic = searchValue.trim();
     if (!topic) {
       message.warning("Please enter a quiz topic");
       return;
     }
     setShowDifficultyModal(true);
-  };
+  }, [searchValue]);
 
-  const handleDifficultySelect = async (difficulty) => {
+  const handleDifficultySelect = useCallback(async (difficulty) => {
     const topic = searchValue.trim();
     setIsGenerating(true);
     setShowDifficultyModal(false);
@@ -76,11 +88,11 @@ export default function Home() {
       }
       setIsGenerating(false);
     }
-  };
+  }, [searchValue, fetchUserProfile, router]);
 
-  const handleSuggestionClick = (topic) => {
+  const handleSuggestionClick = useCallback((topic) => {
     setSearchValue(topic);
-  };
+  }, []);
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-4 py-12 text-zinc-100 sm:px-6 sm:py-16">
@@ -90,7 +102,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             AI Quiz Generator
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 sm:mt-4 sm:text-base">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-300 sm:mt-4 sm:text-base">
             Type any topic. Get an AI‑generated quiz.  
             Level up from <span className="text-white">0 to 10</span>.
           </p>
@@ -125,7 +137,7 @@ export default function Home() {
 
         {/* LEVEL INFO */}
         <div className="mb-8 w-full text-center sm:mb-12">
-          <p className="mb-3 text-xs text-zinc-400 sm:mb-4 sm:text-sm">
+          <p className="mb-3 text-xs text-zinc-300 sm:mb-4 sm:text-sm">
             Difficulty levels
           </p>
           <div className="flex flex-wrap justify-center gap-2 text-xs sm:gap-3 sm:text-sm">
@@ -143,7 +155,7 @@ export default function Home() {
       </div>
 
       {/* FOOTER */}
-      <footer className="absolute bottom-4 left-0 right-0 w-full py-6 text-center text-xs text-zinc-600 sm:bottom-6 sm:py-0">
+      <footer className="absolute bottom-4 left-0 right-0 w-full py-6 text-center text-xs text-zinc-400 sm:bottom-6 sm:py-0">
         {FOOTER_TEXT}
       </footer>
 
@@ -161,7 +173,7 @@ export default function Home() {
           <div className="rounded-xl border border-zinc-700/50 bg-zinc-900/80 p-8 text-center backdrop-blur-xl">
             <div className="mb-4 text-6xl">🤖</div>
             <h3 className="mb-2 text-2xl font-bold text-zinc-100">Generating Quiz...</h3>
-            <p className="text-zinc-400">AI is creating your questions</p>
+            <p className="text-zinc-300">AI is creating your questions</p>
             <div className="mt-4 flex justify-center gap-2">
               <div className="h-2 w-2 animate-bounce rounded-full bg-indigo-500" style={{ animationDelay: '0ms' }}></div>
               <div className="h-2 w-2 animate-bounce rounded-full bg-indigo-500" style={{ animationDelay: '150ms' }}></div>

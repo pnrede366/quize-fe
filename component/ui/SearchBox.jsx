@@ -28,7 +28,7 @@ export default function SearchBox({
         </Button>
       </div>
       {helperText && (
-        <p className="mt-3 text-center text-xs text-zinc-500 sm:text-sm">
+        <p className="mt-3 text-center text-xs text-zinc-300 sm:text-sm">
           {helperText}
         </p>
       )}

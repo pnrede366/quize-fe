@@ -1,5 +1,5 @@
 import { RANK_EMOJIS, LEVEL_COLORS } from "./constants";
-import { getAvatar } from "./utility";
+import { renderAvatar } from "./utility";
 
 // Podium position configurations
 const PODIUM_CONFIG = {
@@ -32,7 +32,9 @@ export default function TopThreeCard({ player, position }) {
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-4xl">
           {RANK_EMOJIS[position]}
         </div>
-        <div className={`${config.avatar} mb-4 mt-4`}>{getAvatar(player.username)}</div>
+        <div className="mb-4 mt-4 flex justify-center">
+          {renderAvatar(player.username, player.profilePicture, position === 1 ? "3xl" : "2xl")}
+        </div>
         <h3 className="mb-2 text-xl font-bold text-zinc-100">{player.username}</h3>
         <div className="mb-2 text-3xl font-bold text-indigo-400">{player.score.toLocaleString()}</div>
         <div className="flex items-center justify-center gap-4 text-sm text-zinc-400">

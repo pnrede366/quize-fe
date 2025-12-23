@@ -70,9 +70,26 @@ export default function ProfilePage() {
         <div className="mb-6 sm:mb-8 rounded-xl border border-zinc-800 bg-zinc-900 p-4 sm:p-6 md:p-8">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full">
-              <div className="flex h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 items-center justify-center rounded-full bg-indigo-500/20 text-3xl sm:text-4xl md:text-5xl flex-shrink-0">
-                {user.isPremium ? "👑" : "👤"}
-              </div>
+              {user.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt={user.username}
+                  className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-full object-cover flex-shrink-0 border-2 border-indigo-500/50"
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    const fallback = document.createElement("div");
+                    fallback.className = "flex h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 items-center justify-center rounded-full bg-indigo-500/20 text-3xl sm:text-4xl md:text-5xl flex-shrink-0";
+                    fallback.textContent = user.isPremium ? "👑" : "👤";
+                    e.target.parentNode.insertBefore(fallback, e.target);
+                  }}
+                />
+              ) : (
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 items-center justify-center rounded-full bg-indigo-500/20 text-3xl sm:text-4xl md:text-5xl flex-shrink-0">
+                  {user.isPremium ? "👑" : "👤"}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <h1 className="mb-2 text-xl sm:text-2xl md:text-3xl font-bold text-zinc-100 break-words">
                   {user.username}

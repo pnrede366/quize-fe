@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { message } from "antd";
-import { io } from "socket.io-client";
+import dynamic from "next/dynamic";
 import { userAPI } from "../../../api/api";
+
+// Dynamic import for socket.io to reduce initial bundle
+const loadSocketIO = () => import("socket.io-client").then((mod) => mod.io);
 
 export function useLeaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -21,25 +24,30 @@ export function useLeaderboard() {
   useEffect(() => {
     fetchLeaderboard();
 
-    // Connect to Socket.IO for real-time updates
-    const socket = io(process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000');
+    // Lazy load and connect to Socket.IO for real-time updates
+    let socket = null;
+    loadSocketIO().then((io) => {
+      socket = io(process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000');
 
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO');
-    });
+      socket.on('connect', () => {
+        console.log('Connected to Socket.IO');
+      });
 
-    socket.on('leaderboard-update', (data) => {
-      console.log('Leaderboard update received:', data);
-      fetchLeaderboard();
-      message.success(`${data.username} just scored points! 🎉`, 3);
-    });
+      socket.on('leaderboard-update', (data) => {
+        console.log('Leaderboard update received:', data);
+        fetchLeaderboard();
+        message.success(`${data.username} just scored points! 🎉`, 3);
+      });
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from Socket.IO');
+      socket.on('disconnect', () => {
+        console.log('Disconnected from Socket.IO');
+      });
     });
 
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
     };
   }, []);
 
