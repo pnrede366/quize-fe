@@ -7,7 +7,7 @@ import Link from "next/link";
 import { categoryAPI } from "../../../api/api";
 import Button from "../../../component/ui/Button";
 import Loader from "../../../component/ui/Loader";
-import { getDifficultyBadgeWithColor } from "../../../helper/utility";
+import { getDifficultyBadgeWithColor } from "../../helper/utility.js";
 
 export default function CategoryQuizzesPage() {
   const params = useParams();

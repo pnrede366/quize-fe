@@ -8,7 +8,7 @@ import { userAPI } from "../../api/api";
 import Badge from "../../component/ui/Badge";
 import Loader from "../../component/ui/Loader";
 import { STATS_CARDS_CONFIG, DIFFICULTY_FILTERS } from "./constants";
-import { getDifficultyBadge, filterQuizzesByDifficulty, calculatePercentage } from "../../../helper/utility";
+import { getDifficultyBadge, filterQuizzesByDifficulty, calculatePercentage } from "../../helper/utility.js";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);

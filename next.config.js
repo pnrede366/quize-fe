@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
@@ -15,6 +17,13 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['antd'],
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@helper': path.resolve(__dirname, 'helper'),
+    };
+    return config;
   },
 };
 

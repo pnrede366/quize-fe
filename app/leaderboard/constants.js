@@ -68,4 +68,4 @@ export const LEADERBOARD_SECTIONS = [
 ];
 
 // Import LEVEL_COLORS from global helper
-export { LEVEL_COLORS } from "../../../helper/constant";
+export { LEVEL_COLORS } from "../../helper/constant.js";

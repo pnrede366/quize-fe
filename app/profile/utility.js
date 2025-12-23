@@ -28,5 +28,5 @@ export const getPlanDetails = (user) => {
 };
 
 // Re-export shared utilities from helper
-export { getDifficultyBadge, calculatePercentage } from "../../../helper/utility";
+export { getDifficultyBadge, calculatePercentage } from "../../helper/utility.js";
 

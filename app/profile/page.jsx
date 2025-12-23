@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { message } from "antd";
 import Link from "next/link";
 import { userAPI } from "../../api/api";
-import { LEVEL_COLORS } from "../../../helper/constant";
+import { LEVEL_COLORS } from "../../helper/constant.js";
 import { STATS_CARDS_CONFIG } from "./constants";
 import { getPlanDetails } from "./utility";
-import { getDifficultyBadge, calculatePercentage } from "../../../helper/utility";
+import { getDifficultyBadge, calculatePercentage } from "../../helper/utility.js";
 import Loader from "../../component/ui/Loader";
 
 export default function ProfilePage() {
