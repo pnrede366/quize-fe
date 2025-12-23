@@ -105,13 +105,13 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-6 text-zinc-100">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-4 py-8 text-zinc-100 sm:px-6">
       {/* BRAND */}
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+      <div className="mb-8 text-center sm:mb-10">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           AI Quiz Generator
         </h1>
-        <p className="mt-3 max-w-xl text-zinc-400">
+        <p className="mt-2 max-w-xl text-sm text-zinc-400 sm:mt-3 sm:text-base">
           Type any topic. Get an AI‑generated quiz.  
           Level up from <span className="text-white">0 to 10</span>.
         </p>
@@ -127,12 +127,13 @@ export default function Home() {
       />
 
       {/* QUICK SUGGESTIONS */}
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
+      <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-10 sm:gap-3">
         {QUICK_SUGGESTIONS.map((topic) => (
           <Badge
             key={topic}
             variant="default"
             onClick={() => handleSuggestionClick(topic)}
+            className="text-xs sm:text-sm"
           >
             {topic}
           </Badge>
@@ -140,16 +141,16 @@ export default function Home() {
       </div>
 
       {/* LEVEL INFO */}
-      <div className="mt-14 text-center">
-        <p className="text-sm text-zinc-400">
+      <div className="mt-8 text-center sm:mt-14">
+        <p className="text-xs text-zinc-400 sm:text-sm">
           Difficulty levels
         </p>
-        <div className="mt-3 flex flex-wrap justify-center gap-3 text-sm">
+        <div className="mt-2 flex flex-wrap justify-center gap-2 text-xs sm:mt-3 sm:gap-3 sm:text-sm">
           {DIFFICULTY_LEVELS.map((level) => (
             <Badge
               key={level.range}
               variant={level.color === "green" ? "easy" : level.color === "yellow" ? "medium" : level.color === "orange" ? "hard" : "expert"}
-              className="px-3 py-1"
+              className="px-2 py-1 sm:px-3"
             >
               {level.range} {level.label}
             </Badge>
@@ -158,7 +159,7 @@ export default function Home() {
       </div>
 
       {/* FOOTER */}
-      <footer className="absolute bottom-6 text-xs text-zinc-600">
+      <footer className="mt-auto py-4 text-center text-xs text-zinc-600 sm:absolute sm:bottom-6">
         {FOOTER_TEXT}
       </footer>
 

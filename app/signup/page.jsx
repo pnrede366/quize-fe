@@ -77,23 +77,19 @@ export default function SignupPage() {
   const handleSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const result = await authAPI.signup(data);
-        setUserData(data);
-        setOtpSent(true);
-        notification.success({
-          message: "Success",
-          description: "OTP sent to your email! Please check your inbox.",
-          placement: "topRight",
-        });
-    } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.error || error.message || "Signup failed",
+      await authAPI.signup(data);
+      setUserData(data);
+      setOtpSent(true);
+      notification.success({
+        message: "Success",
+        description: "OTP sent to your email! Please check your inbox.",
         placement: "topRight",
       });
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Signup failed";
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {
@@ -114,20 +110,23 @@ export default function SignupPage() {
     setIsLoading(true);
     try {
       const result = await authAPI.verifyOTP(userData.email, otp);
-        notification.success({
-          message: "Success",
-          description: "Account created successfully!",
-          placement: "topRight",
-        });
-    } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.error || error.message || "Invalid OTP",
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      
+      // Dispatch custom event to update header
+      window.dispatchEvent(new Event('authChange'));
+      
+      notification.success({
+        message: "Success",
+        description: "Account created successfully!",
         placement: "topRight",
       });
+      router.push("/dashboard");
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Invalid OTP";
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {
@@ -139,23 +138,23 @@ export default function SignupPage() {
     try {
       setIsLoading(true);
       const data = await authAPI.googleAuth(response.credential);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        notification.success({
-          message: "Success",
-          description: "Account created successfully!",
-          placement: "topRight",
-        });
-        router.push("/");
-    } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.error || error.message || "Google signup failed",
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // Dispatch custom event to update header
+      window.dispatchEvent(new Event('authChange'));
+      
+      notification.success({
+        message: "Success",
+        description: "Account created successfully!",
         placement: "topRight",
       });
+      router.push("/dashboard");
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Google signup failed";
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {

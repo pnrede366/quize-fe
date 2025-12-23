@@ -26,22 +26,18 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     try {
-      const result = await authAPI.sendOTP(email);
-        setOtpSent(true);
-        notification.success({
-          message: "OTP Sent",
-          description: "OTP sent to your email! Please check your inbox.",
-          placement: "topRight",
-        });
-    } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.error || error.message || "Failed to send OTP",
+      await authAPI.sendOTP(email);
+      setOtpSent(true);
+      notification.success({
+        message: "OTP Sent",
+        description: "OTP sent to your email! Please check your inbox.",
         placement: "topRight",
       });
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Failed to send OTP";
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {
@@ -62,18 +58,23 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const result = await authAPI.verifyOTP(email, otp);
-        localStorage.setItem("token", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user));
-        notification.success({
-          message: "Success",
-          description: "Login successful!",
-          placement: "topRight",
-        });
-        router.push("/dashboard");
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      
+      // Dispatch custom event to update header
+      window.dispatchEvent(new Event('authChange'));
+      
+      notification.success({
+        message: "Success",
+        description: "Login successful!",
+        placement: "topRight",
+      });
+      router.push("/dashboard");
     } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Invalid OTP";
       notification.error({
         message: "Error",
-        description: error.response?.data?.error || error.message || "Invalid OTP",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {
@@ -111,23 +112,23 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       const data = await authAPI.googleAuth(response.credential);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        notification.success({
-          message: "Success",
-          description: "Login successful!",
-          placement: "topRight",
-        });
-        router.push("/");
-    } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.error || error.message || "Google login failed",
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // Dispatch custom event to update header
+      window.dispatchEvent(new Event('authChange'));
+      
+      notification.success({
+        message: "Success",
+        description: "Login successful!",
         placement: "topRight",
       });
+      router.push("/dashboard");
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || "Google login failed";
       notification.error({
         message: "Error",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         placement: "topRight",
       });
     } finally {
