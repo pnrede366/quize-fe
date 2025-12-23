@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { notification } from "antd";
+import { message } from "antd";
 import SearchBox from "../component/ui/SearchBox";
 import Badge from "../component/ui/Badge";
 import DifficultySelector from "../component/ui/DifficultySelector";
@@ -43,11 +43,7 @@ export default function Home() {
   const handleGenerate = () => {
     const topic = searchValue.trim();
     if (!topic) {
-      notification.warning({
-        message: "Topic Required",
-        description: "Please enter a quiz topic",
-        placement: "topRight",
-      });
+      message.warning("Please enter a quiz topic");
       return;
     }
     setShowDifficultyModal(true);
@@ -61,11 +57,7 @@ export default function Home() {
     try {
       const quiz = await quizAPI.generateQuiz(topic, difficulty.range);
       
-      notification.success({
-        message: "Quiz Generated!",
-        description: `Your ${difficulty.label} quiz on "${topic}" is ready!`,
-        placement: "topRight",
-      });
+      message.success(`Quiz Generated! Your ${difficulty.label} quiz on "${topic}" is ready!`);
 
       await fetchUserProfile();
       router.push(`/quiz/${quiz._id}`);
@@ -73,28 +65,14 @@ export default function Home() {
       if (error.response?.data?.limitReached) {
         // Check if it's testing mode restriction
         if (error.response?.data?.testingMode) {
-          notification.error({
-            message: "Testing Mode Restriction",
-            description: error.response?.data?.message,
-            placement: "topRight",
-            duration: 8,
-          });
+          message.error(error.response?.data?.message || "Testing Mode Restriction", 8);
         } else {
           // Free tier limit
           setShowPremiumModal(true);
-          notification.warning({
-            message: "Free Tier Limit Reached",
-            description: error.response?.data?.message,
-            placement: "topRight",
-            duration: 5,
-          });
+          message.warning(error.response?.data?.message || "Free Tier Limit Reached", 5);
         }
       } else {
-        notification.error({
-          message: "Generation Failed",
-          description: error.message || "Failed to generate quiz. Please try again.",
-          placement: "topRight",
-        });
+        message.error(error.message || "Failed to generate quiz. Please try again.");
       }
       setIsGenerating(false);
     }
@@ -105,61 +83,67 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-4 py-8 text-zinc-100 sm:px-6">
-      {/* BRAND */}
-      <div className="mb-8 text-center sm:mb-10">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-          AI Quiz Generator
-        </h1>
-        <p className="mt-2 max-w-xl text-sm text-zinc-400 sm:mt-3 sm:text-base">
-          Type any topic. Get an AI‑generated quiz.  
-          Level up from <span className="text-white">0 to 10</span>.
-        </p>
-      </div>
+    <main className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-4 py-12 text-zinc-100 sm:px-6 sm:py-16">
+      <div className="flex w-full max-w-4xl flex-col items-center">
+        {/* BRAND */}
+        <div className="mb-8 w-full text-center sm:mb-10">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            AI Quiz Generator
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 sm:mt-4 sm:text-base">
+            Type any topic. Get an AI‑generated quiz.  
+            Level up from <span className="text-white">0 to 10</span>.
+          </p>
+        </div>
 
-      {/* SEARCH BOX */}
-      <SearchBox
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onGenerate={handleGenerate}
-        placeholder={PLACEHOLDER_TEXT}
-        helperText={FREE_QUIZZES_TEXT}
-      />
+        {/* SEARCH BOX */}
+        <div className="mb-8 flex w-full justify-center sm:mb-10">
+          <div className="w-full max-w-2xl">
+            <SearchBox
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onGenerate={handleGenerate}
+              placeholder={PLACEHOLDER_TEXT}
+              helperText={FREE_QUIZZES_TEXT}
+            />
+          </div>
+        </div>
 
-      {/* QUICK SUGGESTIONS */}
-      <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-10 sm:gap-3">
-        {QUICK_SUGGESTIONS.map((topic) => (
-          <Badge
-            key={topic}
-            variant="default"
-            onClick={() => handleSuggestionClick(topic)}
-            className="text-xs sm:text-sm"
-          >
-            {topic}
-          </Badge>
-        ))}
-      </div>
-
-      {/* LEVEL INFO */}
-      <div className="mt-8 text-center sm:mt-14">
-        <p className="text-xs text-zinc-400 sm:text-sm">
-          Difficulty levels
-        </p>
-        <div className="mt-2 flex flex-wrap justify-center gap-2 text-xs sm:mt-3 sm:gap-3 sm:text-sm">
-          {DIFFICULTY_LEVELS.map((level) => (
+        {/* QUICK SUGGESTIONS */}
+        <div className="mb-8 flex w-full max-w-2xl flex-wrap justify-center gap-2 sm:mb-10 sm:gap-3">
+          {QUICK_SUGGESTIONS.map((topic) => (
             <Badge
-              key={level.range}
-              variant={level.color === "green" ? "easy" : level.color === "yellow" ? "medium" : level.color === "orange" ? "hard" : "expert"}
-              className="px-2 py-1 sm:px-3"
+              key={topic}
+              variant="default"
+              onClick={() => handleSuggestionClick(topic)}
+              className="text-xs sm:text-sm"
             >
-              {level.range} {level.label}
+              {topic}
             </Badge>
           ))}
+        </div>
+
+        {/* LEVEL INFO */}
+        <div className="mb-8 w-full text-center sm:mb-12">
+          <p className="mb-3 text-xs text-zinc-400 sm:mb-4 sm:text-sm">
+            Difficulty levels
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 text-xs sm:gap-3 sm:text-sm">
+            {DIFFICULTY_LEVELS.map((level) => (
+              <Badge
+                key={level.range}
+                variant={level.color === "green" ? "easy" : level.color === "yellow" ? "medium" : level.color === "orange" ? "hard" : "expert"}
+                className="px-2.5 py-1.5 sm:px-3"
+              >
+                {level.range} {level.label}
+              </Badge>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* FOOTER */}
-      <footer className="mt-auto py-4 text-center text-xs text-zinc-600 sm:absolute sm:bottom-6">
+      <footer className="absolute bottom-4 left-0 right-0 w-full py-6 text-center text-xs text-zinc-600 sm:bottom-6 sm:py-0">
         {FOOTER_TEXT}
       </footer>
 

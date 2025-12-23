@@ -12,22 +12,23 @@ export default function SearchBox({
 }) {
   return (
     <div className={`w-full max-w-2xl ${className}`}>
-      <div className="flex items-center rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 focus-within:border-indigo-500">
+      <div className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900 p-3 focus-within:border-indigo-500 sm:flex-row sm:items-center sm:px-4 sm:py-3 sm:gap-0">
         <Input
           type="text"
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          className="w-full flex-1"
         />
         <Button
           onClick={onGenerate}
-          className="ml-4"
+          className="w-full shrink-0 sm:ml-4 sm:w-auto"
         >
           {generateText}
         </Button>
       </div>
       {helperText && (
-        <p className="mt-3 text-center text-sm text-zinc-500">
+        <p className="mt-3 text-center text-xs text-zinc-500 sm:text-sm">
           {helperText}
         </p>
       )}

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { notification } from "antd";
+import { message } from "antd";
 import { quizAPI } from "../../../api/api";
 import Button from "../../../component/ui/Button";
+import Loader from "../../../component/ui/Loader";
 
 export default function QuizPage() {
   const params = useParams();
@@ -25,11 +26,7 @@ export default function QuizPage() {
       const data = await quizAPI.getQuizById(params.id);
       setQuiz(data);
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: "Failed to load quiz",
-        placement: "topRight",
-      });
+      message.error("Failed to load quiz");
       router.push("/");
     } finally {
       setLoading(false);
@@ -63,30 +60,14 @@ export default function QuizPage() {
       setResults(result);
       setShowResults(true);
       
-      notification.success({
-        message: "Quiz Submitted! 🎉",
-        description: `You scored ${result.score}/${result.total} (${result.percentage}%) - Earned ${result.pointsEarned || result.score * 10} points!`,
-        placement: "topRight",
-        duration: 5,
-      });
+      message.success(`Quiz Submitted! 🎉 You scored ${result.score}/${result.total} (${result.percentage}%) - Earned ${result.pointsEarned || result.score * 10} points!`, 5);
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: "Failed to submit quiz",
-        placement: "topRight",
-      });
+      message.error("Failed to submit quiz");
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="text-center">
-          <div className="mb-4 text-6xl">📚</div>
-          <p className="text-xl text-zinc-400">Loading quiz...</p>
-        </div>
-      </div>
-    );
+    return <Loader emoji="📚" message="Loading quiz..." />;
   }
 
   if (!quiz) return null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { notification } from "antd";
+import { message } from "antd";
 import Modal from "./Modal";
 import Button from "./Button";
 import { paymentAPI, testPaymentAPI } from "../../api/api";
@@ -58,12 +58,7 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
         const data = await testPaymentAPI.simulateSuccess(orderId, selectedPlan);
 
         if (data.success) {
-          notification.success({
-            message: "Premium Activated! (TEST MODE)",
-            description: "Your premium subscription is now active. This is a test transaction.",
-            placement: "topRight",
-            duration: 5,
-          });
+          message.success("Premium Activated! (TEST MODE) - Your premium subscription is now active. This is a test transaction.", 5);
           
           const userData = JSON.parse(localStorage.getItem("user") || "{}");
           userData.isPremium = true;
@@ -72,22 +67,14 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
           onClose();
           window.location.reload();
         } else {
-          notification.error({
-            message: "Test Mode Error",
-            description: data.error || "Failed to activate premium in test mode",
-            placement: "topRight",
-          });
+          message.error(data.error || "Failed to activate premium in test mode");
         }
       } else {
         // Real Razorpay payment
         const res = await loadRazorpayScript();
         
         if (!res) {
-          notification.error({
-            message: "Razorpay SDK Error",
-            description: "Failed to load Razorpay SDK. Please check your internet connection.",
-            placement: "topRight",
-          });
+          message.error("Failed to load Razorpay SDK. Please check your internet connection.");
           setLoading(false);
           return;
         }
@@ -96,11 +83,7 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
         const orderData = await paymentAPI.initiate(selectedPlan);
 
         if (!orderData.success) {
-          notification.error({
-            message: "Payment Error",
-            description: orderData.message || orderData.error || "Failed to create order",
-            placement: "topRight",
-          });
+          message.error(orderData.message || orderData.error || "Failed to create order");
           setLoading(false);
           return;
         }
@@ -131,12 +114,7 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
               });
 
               if (verifyData.success) {
-                notification.success({
-                  message: "Payment Successful!",
-                  description: "Your premium subscription is now active. Enjoy unlimited quiz generation!",
-                  placement: "topRight",
-                  duration: 5,
-                });
+                message.success("Payment Successful! Your premium subscription is now active. Enjoy unlimited quiz generation!", 5);
 
                 const userData = JSON.parse(localStorage.getItem("user") || "{}");
                 userData.isPremium = true;
@@ -145,29 +123,17 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
                 onClose();
                 window.location.reload();
               } else {
-                notification.error({
-                  message: "Verification Failed",
-                  description: "Payment received but verification failed. Please contact support.",
-                  placement: "topRight",
-                });
+                message.error("Payment received but verification failed. Please contact support.");
               }
             } catch (error) {
-              notification.error({
-                message: "Verification Error",
-                description: "Error verifying payment. Please contact support.",
-                placement: "topRight",
-              });
+              message.error("Error verifying payment. Please contact support.");
             }
             setLoading(false);
           },
           modal: {
             ondismiss: function() {
               setLoading(false);
-              notification.info({
-                message: "Payment Cancelled",
-                description: "You cancelled the payment process.",
-                placement: "topRight",
-              });
+              message.info("You cancelled the payment process.");
             }
           }
         };
@@ -177,12 +143,7 @@ export default function PremiumModal({ isOpen, onClose, quizzesRemaining = 0 }) 
       }
     } catch (error) {
       console.error("Payment error:", error);
-      notification.error({
-        message: "Error",
-        description: error.message || "Something went wrong. Please try again.",
-        placement: "topRight",
-        duration: 5,
-      });
+      message.error(error.message || "Something went wrong. Please try again.", 5);
       setLoading(false);
     }
   };

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notification } from "antd";
+import { message } from "antd";
 import Link from "next/link";
 import { categoryAPI } from "../../api/api";
 import Input from "../../component/ui/Input";
+import Loader from "../../component/ui/Loader";
+import { getCategoryIcon, filterCategories } from "./utility";
 
 export default function QuizzesPage() {
   const [categories, setCategories] = useState([]);
@@ -22,11 +24,7 @@ export default function QuizzesPage() {
       setCategories(data);
       setFilteredCategories(data);
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: "Failed to load categories",
-        placement: "topRight",
-      });
+      message.error("Failed to load categories");
     } finally {
       setLoading(false);
     }
@@ -35,36 +33,12 @@ export default function QuizzesPage() {
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    
-    if (query.trim() === "") {
-      setFilteredCategories(categories);
-    } else {
-      const filtered = categories.filter((category) =>
-        category.name.toLowerCase().includes(query)
-      );
-      setFilteredCategories(filtered);
-    }
-  };
-
-  const getCategoryIcon = (name) => {
-    const icons = {
-      default: [
-        "📚", "📝", "🎯", "🔬", "💡", "📈", "📖", "🧠", "🔎", "🧑‍💻", "📘", "🛠️", "✨"
-      ][Math.floor(Math.random() * 13)],
-    };
-    const key = name.toLowerCase();
-    return icons[key] || icons.default;
+    const filtered = filterCategories(categories, query);
+    setFilteredCategories(filtered);
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="text-center">
-          <div className="mb-4 text-6xl">📚</div>
-          <p className="text-xl text-zinc-400">Loading quizzes...</p>
-        </div>
-      </div>
-    );
+    return <Loader emoji="📚" message="Loading quizzes..." />;
   }
 
   return (

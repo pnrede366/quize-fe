@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { notification } from "antd";
+import { message } from "antd";
 import Button from "../../component/ui/Button";
 import { authAPI } from "../../api/api";
 
@@ -17,29 +17,17 @@ export default function LoginPage() {
   const handleSendOTP = async (e) => {
     e.preventDefault();
     if (!email) {
-      notification.warning({
-        message: "Email Required",
-        description: "Please enter your email",
-        placement: "topRight",
-      });
+      message.warning("Please enter your email");
       return;
     }
     setIsLoading(true);
     try {
       await authAPI.sendOTP(email);
       setOtpSent(true);
-      notification.success({
-        message: "OTP Sent",
-        description: "OTP sent to your email! Please check your inbox.",
-        placement: "topRight",
-      });
+      message.success("OTP sent to your email! Please check your inbox.");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Failed to send OTP";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -48,11 +36,7 @@ export default function LoginPage() {
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     if (!otp || otp.length !== 6) {
-      notification.warning({
-        message: "Invalid OTP",
-        description: "Please enter a 6-digit OTP",
-        placement: "topRight",
-      });
+      message.warning("Please enter a 6-digit OTP");
       return;
     }
     setIsLoading(true);
@@ -64,19 +48,11 @@ export default function LoginPage() {
       // Dispatch custom event to update header
       window.dispatchEvent(new Event('authChange'));
       
-      notification.success({
-        message: "Success",
-        description: "Login successful!",
-        placement: "topRight",
-      });
+      message.success("Login successful!");
       router.push("/dashboard");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Invalid OTP";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -118,19 +94,11 @@ export default function LoginPage() {
       // Dispatch custom event to update header
       window.dispatchEvent(new Event('authChange'));
       
-      notification.success({
-        message: "Success",
-        description: "Login successful!",
-        placement: "topRight",
-      });
+      message.success("Login successful!");
       router.push("/dashboard");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Google login failed";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -142,11 +110,7 @@ export default function LoginPage() {
       // eslint-disable-next-line no-undef
       google.accounts.id.prompt();
     } else {
-      notification.error({
-        message: "Error",
-        description: "Google Sign-In not loaded. Please refresh the page.",
-        placement: "topRight",
-      });
+      message.error("Google Sign-In not loaded. Please refresh the page.");
     }
   };
 

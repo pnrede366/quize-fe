@@ -3,43 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { notification } from "antd";
+import { message } from "antd";
 import Form from "../../component/ui/Form";
 import Button from "../../component/ui/Button";
 import { authAPI } from "../../api/api";
-
-const signupFields = [
-  {
-    name: "username",
-    label: "Username",
-    type: "text",
-    placeholder: "Enter your username",
-    required: true,
-  },
-  {
-    name: "email",
-    label: "Email",
-    type: "email",
-    placeholder: "Enter your email",
-    required: true,
-  },
-  {
-    name: "mobile",
-    label: "Mobile Number",
-    type: "number",
-    placeholder: "Enter your mobile number",
-    required: true,
-    props: { maxLength: 10 },
-  },
-  {
-    name: "pincode",
-    label: "Pincode",
-    type: "number",
-    placeholder: "Enter your pincode",
-    required: true,
-    props: { maxLength: 6 },
-  },
-];
+import { SIGNUP_FIELDS } from "./constants";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -80,18 +48,10 @@ export default function SignupPage() {
       await authAPI.signup(data);
       setUserData(data);
       setOtpSent(true);
-      notification.success({
-        message: "Success",
-        description: "OTP sent to your email! Please check your inbox.",
-        placement: "topRight",
-      });
+      message.success("OTP sent to your email! Please check your inbox.");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Signup failed";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -100,11 +60,7 @@ export default function SignupPage() {
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     if (!otp || otp.length !== 6) {
-      notification.warning({
-        message: "Invalid OTP",
-        description: "Please enter a 6-digit OTP",
-        placement: "topRight",
-      });
+      message.warning("Please enter a 6-digit OTP");
       return;
     }
     setIsLoading(true);
@@ -116,19 +72,11 @@ export default function SignupPage() {
       // Dispatch custom event to update header
       window.dispatchEvent(new Event('authChange'));
       
-      notification.success({
-        message: "Success",
-        description: "Account created successfully!",
-        placement: "topRight",
-      });
+      message.success("Account created successfully!");
       router.push("/dashboard");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Invalid OTP";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -144,19 +92,11 @@ export default function SignupPage() {
       // Dispatch custom event to update header
       window.dispatchEvent(new Event('authChange'));
       
-      notification.success({
-        message: "Success",
-        description: "Account created successfully!",
-        placement: "topRight",
-      });
+      message.success("Account created successfully!");
       router.push("/dashboard");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || "Google signup failed";
-      notification.error({
-        message: "Error",
-        description: errorMessage,
-        placement: "topRight",
-      });
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -168,11 +108,7 @@ export default function SignupPage() {
       // eslint-disable-next-line no-undef
       google.accounts.id.prompt();
     } else {
-      notification.error({
-        message: "Error",
-        description: "Google Sign-In not loaded. Please refresh the page.",
-        placement: "topRight",
-      });
+      message.error("Google Sign-In not loaded. Please refresh the page.");
     }
   };
 
@@ -183,7 +119,7 @@ export default function SignupPage() {
           {!otpSent ? (
             <Form
               title="Create account"
-              fields={signupFields}
+              fields={SIGNUP_FIELDS}
               submitButtonText={isLoading ? "Signing up..." : "Sign up"}
               onSubmit={handleSubmit}
               footer={

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { notification } from "antd";
+import { message } from "antd";
 import Link from "next/link";
 import Button from "../../../../component/ui/Button";
+import Loader from "../../../../component/ui/Loader";
 import { quizAPI, userAPI } from "../../../../api/api";
 
 export default function QuizResultsPage() {
@@ -34,11 +35,7 @@ export default function QuizResultsPage() {
       const resultData = await userAPI.getQuizResult(params.id);
       setResult(resultData);
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: error.response?.data?.message || "Failed to load quiz results",
-        placement: "topRight",
-      });
+      message.error(error.response?.data?.message || "Failed to load quiz results");
       router.push("/profile");
     } finally {
       setLoading(false);
@@ -46,14 +43,7 @@ export default function QuizResultsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="text-center">
-          <div className="mb-4 text-6xl">📊</div>
-          <p className="text-xl text-zinc-400">Loading results...</p>
-        </div>
-      </div>
-    );
+    return <Loader emoji="📊" message="Loading results..." />;
   }
 
   if (!quiz || !result) return null;

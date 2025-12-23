@@ -1,19 +1,23 @@
 export const QUICK_SUGGESTIONS = [
-  "JavaScript Basics",
-  "React Hooks",
-  "Next.js",
-  "DSA Arrays",
-  "System Design",
+  "Python Basics",
+  "World History",
+  "Biology",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Geography",
+  "Literature",
+  "Economics",
 ];
 
 export const DIFFICULTY_LEVELS = [
-  { range: "0–2", label: "Easy", color: "green" },
-  { range: "3–5", label: "Medium", color: "yellow" },
-  { range: "6–8", label: "Hard", color: "orange" },
-  { range: "9–10", label: "Expert", color: "red" },
+  { label: "Easy", color: "green" },
+  {  label: "Medium", color: "yellow" },
+  {  label: "Hard", color: "orange" },
+  { label: "Expert", color: "red" },
 ];
 
-export const PLACEHOLDER_TEXT = "Type a quiz topic (e.g. React hooks, JS closures, DSA arrays...)";
+export const PLACEHOLDER_TEXT = "Type any topic to generate a quiz (e.g. Python, World War 2, Photosynthesis...)";
 
 export const FOOTER_TEXT = "Built By Purushottam Rede";
 
